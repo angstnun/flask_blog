@@ -12,8 +12,7 @@ blogBlueprint = Blueprint('blog', __name__)
 @blogBlueprint.route('/')
 def index():
     dbSession = db.GetSession()
-    posts = dbSession.query(db.posts).all()
-    dbSession.close()
+    posts = dbSession.query(db.Post).filter_by(isActive=True).all()
     return render_template('blog/index.html', posts=posts)
 
 
@@ -40,14 +39,12 @@ def create():
                 )
                 dbSession.add(newPost)
                 dbSession.commit()
-                dbSession.close()
                 return redirect(url_for('blog.index'))
 
         return render_template('blog/create.html')
     except Exception as blogBlueprintException:
         error = f"Oh no, something went wrong: {str(blogBlueprintException)}"
         flash(error)
-        dbSession.close()
         return render_template('/error.html')
 
 def get_post(id, check_author=True):
@@ -55,7 +52,6 @@ def get_post(id, check_author=True):
     post = dbSession.query(db.Post, db.User).\
         filter(db.Post.author_id == db.User.id).\
         filter(db.Post.id == id).scalar()
-    dbSession.close()
 
     if post is None:
         abort(404, f"Post doesn't exist: {id}")
@@ -88,7 +84,6 @@ def update(id):
             post.title = title
             post.text = body
             dbSession.commit()
-            dbSession.close()
             return redirect(url_for('blog.index'))
 
     return render_template('blog/update.html', post=post)
@@ -102,5 +97,4 @@ def delete(id):
         scalar()
     post.isActive = 0
     dbSession.commit()
-    dbSession.close()
     return redirect(url_for('blog.index'))

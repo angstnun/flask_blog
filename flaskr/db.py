@@ -26,7 +26,6 @@ users = Table('user', metadata,
     Column('dateCreated', DateTime, nullable=False, server_default=func.now()),
     Column('dateUpdated', DateTime, nullable=False, server_default=func.now(), onupdate=func.now()),
     Column('isActive', Boolean, default=True),
-
 )
 
 posts = Table('post', metadata,
@@ -43,22 +42,29 @@ metadata.reflect(engine, only=['user', 'post'])
 Base = automap_base(metadata=metadata)
 Base.prepare()
 User, Post = Base.classes.user, Base.classes.post
-
-def GetDB():
-    connection = engine.connect()
-    return connection
+User.posts = relationship("post", back_populates="user")
+Post.author = relationship("user", back_populates="posts")
     
 def GetSession():
-    newSession = Session()
-    return newSession
-    
+    if 'session' not in g:
+        g.session = Session()
+        
+    return g.session
+
+def CloseSession(e=None):
+    session = g.pop('session', None)
+
+    if session is not None:
+        session.close()
+        
 database = sa()
 
 @click.command('init-db')
 @with_appcontext
-def init_db_command():
-    metadata.create_all(GetDB())
+def InitDatabaseCommand():
+    metadata.create_all(engine.connect())
     click.echo('Initialized the database.')
 
-def init_app(app):
-    app.cli.add_command(init_db_command)
+def InitApp(app):
+    app.teardown_appcontext(CloseSession)
+    app.cli.add_command(InitDatabaseCommand)

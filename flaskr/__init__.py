@@ -8,7 +8,8 @@ from . import (
 
 def create_app(test_config=None):
 
-    app = Flask(__name__, instance_relative_config=True)
+    staticFolder = os.path.abspath('./flaskr/public/static')
+    app = Flask(__name__, root_path="flaskr/public/", static_folder=staticFolder, instance_relative_config=True)
     app.secret_key = "34ae0d71-3cc0-4297-95fd-2ce6801bf605"
 
     if test_config is None:
@@ -21,7 +22,7 @@ def create_app(test_config=None):
     except OSError:
         pass
     
-    db.init_app(app)
+    db.InitApp(app)
     app.register_blueprint(auth.authBlueprint)
     app.register_blueprint(home.homeBlueprint)
     app.register_blueprint(blog.blogBlueprint)

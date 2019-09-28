@@ -39,14 +39,12 @@ def register():
                 newUser = db.User(username=username, password=password)
                 dbSession.add(newUser)
                 dbSession.commit()
-                dbSession.close()
                 return redirect(url_for('auth.login'))
 
             flash(error)
 
         return render_template('auth/register.html')
     except Exception as authBlueprintException:
-        dbSession.close()
         error = f"Something went wrong: {str(authBlueprintException)}"
         flash(error)
         return render_template('auth/register.html')
@@ -69,14 +67,12 @@ def login():
                 error = 'Incorrect password.'
 
             if error is None:
-                dbSession.close()
                 session['userId'] = existingUser.id
                 return redirect(url_for('home.index'))
             
             flash(error)
         return render_template('auth/login.html')
     except Exception as authBlueprintException:
-        dbSession.close()
         error = f"Something went wrong: {str(authBlueprintException)}"
         flash(error)
         return render_template('auth/login.html')
