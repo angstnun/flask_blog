@@ -16,7 +16,7 @@ from sqlalchemy.orm import (
 )
 
 metadata = MetaData()
-engine = create_engine('mssql+pyodbc://sa:sindrome@localhost/flaskr?trusted_connection=yes&driver=ODBC+Driver+13+for+SQL+Server', poolclass=NullPool)
+engine = create_engine('mssql+pyodbc://flasker:sindrome@192.168.1.220:1433/flaskr?driver=ODBC+Driver+13+for+SQL+Server', poolclass=NullPool)
 Session = sessionmaker(bind=engine)
 
 users = Table('user', metadata,
