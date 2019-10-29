@@ -3,7 +3,7 @@ import os
 from flask import Flask
 
 from . import (
-    db, auth, home, blog
+    db, auth, home, blog, chatService
 )
 
 def create_app(test_config=None):
@@ -17,15 +17,29 @@ def create_app(test_config=None):
     else:
         app.config.from_mapping(test_config)
     
-    try:
+    try:  
         os.makedirs(app.instance_path)
     except OSError:
         pass
     
-    db.InitApp(app)
     app.register_blueprint(auth.authBlueprint)
     app.register_blueprint(home.homeBlueprint)
     app.register_blueprint(blog.blogBlueprint)
     app.add_url_rule('/', endpoint='index')
 
     return app
+
+if __name__ == "__main__":
+    app = create_app()
+    io = chatService.InitChatService(app)
+    
+    @io.on('connection')
+    def OnConnection(json, methods=['GET', 'POST']):
+        print('received my event: ' + str(json))
+        
+    @io.on('my event')
+    def OnMyEvent(json):
+        print('received json: ' + str(json))
+    
+    app.run(port=5000, host=('0.0.0.0'))
+    

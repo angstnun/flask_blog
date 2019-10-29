@@ -1,6 +1,6 @@
 import click
 from flask_sqlalchemy import SQLAlchemy as sa
-from flask import current_app, g
+from flask import current_app , g
 from flask.cli import with_appcontext
 from sqlalchemy import (
     Table, Column, Integer, 
@@ -16,7 +16,7 @@ from sqlalchemy.orm import (
 )
 
 metadata = MetaData()
-engine = create_engine('mssql+pyodbc://flasker:sindrome@192.168.1.220:1433/flaskr?driver=ODBC+Driver+13+for+SQL+Server', poolclass=NullPool)
+engine = create_engine("mssql+pyodbc://flasker:sindrome@OFFICE-DESKTOP-/flaskr?driver=ODBC+Driver+13+for+SQL+Server", poolclass=NullPool)
 Session = sessionmaker(bind=engine)
 
 users = Table('user', metadata,

@@ -1,0 +1,3 @@
+- Ensure app is deployable in any system
+    > Get Flask-sockerIo working
+- Deploy this app to Docker container (DONE)
