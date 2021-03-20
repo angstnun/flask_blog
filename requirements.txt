@@ -4,7 +4,7 @@ Flask==1.1.1
 Flask-SQLAlchemy==2.4.0
 -e git+https://github.com/angstnun/flask_blog.git@5a1f35be6704be0ab14fa5158709fefbda821d9a#egg=flaskr
 itsdangerous==1.1.0
-Jinja2==2.10.1
+Jinja2==2.11.3
 MarkupSafe==1.1.1
 pycodestyle==2.5.0
 pyodbc==4.0.26
